@@ -45,6 +45,9 @@ The time in is recorded at entry. On exit, the fee is the hours parked (rounded 
 ### Contributing Guidelines
 
 
+### UML Diagram
+https://drive.google.com/file/d/1wo8EFNvsKRMdIdXkFvTw9-aVDe8P6qgp/view?usp=sharing
+
 
 ## Credits (Group 1)
     Aguanta, Job Marco Angelus G.  

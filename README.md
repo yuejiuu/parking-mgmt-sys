@@ -47,6 +47,8 @@ The time in is recorded at entry. On exit, the fee is the hours parked (rounded 
 
 ### UML Diagram
 https://drive.google.com/file/d/1wo8EFNvsKRMdIdXkFvTw9-aVDe8P6qgp/view?usp=sharing
+<img width="2569" height="1132" alt="Serato Parking Lot drawio" src="https://github.com/user-attachments/assets/5d7b0f8f-3bfe-4ef2-9bca-87151d9b8237" />
+
 
 
 ## Credits (Group 1)

@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 public class ParkingManagementSystem {
 
-    // ===== Components from clone.form =====
     private JPanel mainPnl;
     private JPanel headerPnl;
     private JLabel titleLbl;

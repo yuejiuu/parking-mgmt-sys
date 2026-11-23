@@ -27,11 +27,13 @@ classDiagram
         +checkOut(plate) ParkingRecord
         +getRecord(plate) ParkingRecord
         +getParkedPlates() String[]
+        +getSlotCount() int
         +getSlotName(index) String
         +getSlotPlate(index) String
     }
     class SlotManager {
         -String[] plates
+        +size() int
         +assignFirstFree(plate) int
         +release(plate) int
         +nameOf(index) String
@@ -44,6 +46,7 @@ classDiagram
     }
     class ParkingRecord {
         -String ticketNo
+        -Vehicle vehicle
         -String slot
         -Date timeIn
         -Date timeOut
@@ -80,8 +83,10 @@ classDiagram
         +getRequiredDigits()* int
         +getPlateHint()* String
         +hasValidPlate() boolean
+        +hasOnlyLettersAndDigits() boolean
         +countLetters() int
         +countDigits() int
+        +countCharacters() int
     }
     class Car
     class Motorcycle

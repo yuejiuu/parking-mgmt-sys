@@ -5,20 +5,6 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * CRA2 Parking Lot - main window (GUI only).
- *
- * Design patterns used:
- *   Factory Method (creational) - VehicleCreator creates Car / Motorcycle / SUV / Truck objects
- *   Facade         (structural) - ParkingFacade hides the parking rules, slots and fees
- *   Decorator      (structural) - TicketText builds the ticket and the receipt
- *
- * Plate checker: each Vehicle knows its own Philippine plate rule
- * (Motorcycle = 3 letters + 3 digits, Car / SUV / Truck = 3 letters + 4 digits).
- * The slot map shows a picture of the parked vehicle (VehicleIcon).
- *
- * The layout is in ParkingManagementSystem.form. The field names below must match the form.
- */
 public class ParkingManagementSystem {
 
     // ===== Components from ParkingManagementSystem.form =====

@@ -17,7 +17,7 @@ A parking lot management system built with Java Swing and the IntelliJ GUI Desig
 ## How to run
 
 1. Open the project in IntelliJ IDEA.
-2. Run the `clone` class (it holds the `main` method and the window). Its layout is in `src/clone.form`.
+2. Run the `ParkingManagementSystem` class (it holds the `main` method and the window). Its layout is in `src/ParkingManagementSystem.form`.
 
 Run it from IntelliJ: the form is compiled by the IDE's GUI Designer, so building it with plain `javac` will not work.
 
@@ -102,7 +102,7 @@ The full class diagram is in `src/class_diagram.mermaid`.
 
 | File | Role |
 |---|---|
-| `clone.java` / `clone.form` | Main window (GUI only) and the program entry point |
+| `ParkingManagementSystem.java` / `ParkingManagementSystem.form` | Main window (GUI only) and the program entry point |
 | `ParkingFacade.java` | Facade: park, check out and look up vehicles |
 | `SlotManager.java` | Tracks which plate is in which slot |
 | `FeeCalculator.java` | Minutes parked, billed hours and the fee |

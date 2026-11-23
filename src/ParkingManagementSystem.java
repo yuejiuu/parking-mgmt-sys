@@ -17,11 +17,11 @@ import java.util.Date;
  * (Motorcycle = 3 letters + 3 digits, Car / SUV / Truck = 3 letters + 4 digits).
  * The slot map shows a picture of the parked vehicle (VehicleIcon).
  *
- * The layout is in clone.form. The field names below must match the form.
+ * The layout is in ParkingManagementSystem.form. The field names below must match the form.
  */
-public class clone {
+public class ParkingManagementSystem {
 
-    // ===== Components from clone.form =====
+    // ===== Components from ParkingManagementSystem.form =====
     private JPanel mainPnl;
     private JPanel headerPnl;
     private JLabel titleLbl;
@@ -62,7 +62,7 @@ public class clone {
     // ===================================================================
     // Setup
     // ===================================================================
-    private clone() {
+    private ParkingManagementSystem() {
         for (VehicleCreator creator : creators) {
             vehicleTypeCb.addItem(creator.getTypeName());
         }
@@ -334,7 +334,7 @@ public class clone {
                         "Warning", JOptionPane.WARNING_MESSAGE);
             }
             JFrame frame = new JFrame("CRA2 Parking Lot");
-            frame.setContentPane(new clone().mainPnl);
+            frame.setContentPane(new ParkingManagementSystem().mainPnl);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(600, 620);
             frame.setMinimumSize(new Dimension(540, 540));

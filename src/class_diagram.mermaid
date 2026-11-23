@@ -1,7 +1,7 @@
 classDiagram
     direction TB
 
-    class clone {
+    class ParkingManagementSystem {
         <<GUI>>
         -ParkingFacade lot
         -VehicleCreator[] creators
@@ -122,12 +122,12 @@ classDiagram
     }
 
     %% ===== Relationships =====
-    clone --> VehicleIcon : slot map picture
+    ParkingManagementSystem --> VehicleIcon : slot map picture
     VehicleIcon ..> Vehicle : drawn from getType()
-    clone --> ParkingFacade : uses
-    clone --> VehicleCreator : uses
-    clone --> Tickets : uses
-    clone ..> ParkingException : catches
+    ParkingManagementSystem --> ParkingFacade : uses
+    ParkingManagementSystem --> VehicleCreator : uses
+    ParkingManagementSystem --> Tickets : uses
+    ParkingManagementSystem ..> ParkingException : catches
 
     ParkingFacade *-- SlotManager
     ParkingFacade *-- FeeCalculator

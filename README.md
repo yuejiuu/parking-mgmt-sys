@@ -37,12 +37,12 @@ Run it from IntelliJ: the form is compiled by the IDE's GUI Designer, so buildin
 ### Plate number checker
 Each vehicle type knows its own Philippine plate rule. Spaces and dashes are ignored, letters are made uppercase, and only letters and numbers are allowed.
 
-| Vehicle type | Rule | Example |
-|---|---|---|
+| Vehicle type | Rule | Example   |
+|---|---|-----------|
 | Car | 3 letters + 4 digits (7 characters, any order) | `ABC 1234` |
 | SUV / Van | 3 letters + 4 digits (7 characters, any order) | `ABC 1234` |
 | Truck | 3 letters + 4 digits (7 characters, any order) | `ABC 1234` |
-| Motorcycle | 3 letters + 3 digits (6 characters, any order) | `ABC 123`, `GA660C` |
+| Motorcycle | 3 letters + 3 digits (6 characters, any order) | `AB123C`  |
 
 - **Live check:** the plate box turns light green when the plate is valid and light red when it is not. Hover over the box to see the rule for the chosen vehicle type.
 - If a plate is rejected, the message says how many letters and digits were entered and what is required.

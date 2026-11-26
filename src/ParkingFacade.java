@@ -13,6 +13,7 @@ public class ParkingFacade {
     private final FeeCalculator fees = new FeeCalculator();
     private final Map<String, ParkingRecord> parked = new HashMap<>();
     private int ticketCount = 0;
+    private long timeOffsetMillis = 0L;
 
     /** Parks the vehicle in the first free slot, or throws a ParkingException. */
     public ParkingRecord park(Vehicle vehicle) throws ParkingException {
@@ -35,7 +36,7 @@ public class ParkingFacade {
 
         ticketCount++;
         String ticketNo = String.format("T-%04d", ticketCount);
-        ParkingRecord record = new ParkingRecord(ticketNo, vehicle, slots.nameOf(index), new Date());
+        ParkingRecord record = new ParkingRecord(ticketNo, vehicle, slots.nameOf(index), getCurrentTime());
         parked.put(plate, record);
         return record;
     }
@@ -58,7 +59,7 @@ public class ParkingFacade {
         if (record == null) {
             throw new ParkingException("Not found", "No parked vehicle with plate " + plate + ".", true);
         }
-        Date now = new Date();
+        Date now = getCurrentTime();
         long minutes = fees.minutesParked(record.getTimeIn(), now);
         long hours = fees.billedHours(minutes);
         long fee = fees.fee(hours, record.getVehicle().getHourlyRate());
@@ -88,5 +89,25 @@ public class ParkingFacade {
 
     public String getSlotPlate(int index) {
         return slots.getPlate(index);
+    }
+
+    /** Returns the current time, including any simulated offset for fee testing. */
+    public Date getCurrentTime() {
+        return new Date(System.currentTimeMillis() + timeOffsetMillis);
+    }
+
+    /** Shifts the simulated clock forward (or backward) by the given number of minutes. */
+    public void advanceTimeMinutes(long minutes) {
+        timeOffsetMillis += minutes * 60_000L;
+    }
+
+    /** Resets the simulated clock back to real system time. */
+    public void resetTime() {
+        timeOffsetMillis = 0L;
+    }
+
+    /** Returns the current simulated offset in whole minutes. */
+    public long getTimeOffsetMinutes() {
+        return timeOffsetMillis / 60_000L;
     }
 }

@@ -77,9 +77,9 @@ class FeeDecorator extends TicketDecorator {
 
 /** Adds the header (lot name and title) and the footer message. */
 class BorderDecorator extends TicketDecorator {
-    private static final String LINE = "==============================\n";
     private final String title;
     private final String footer;
+    private int width = 40; // default, updated dynamically
 
     BorderDecorator(TicketText inner, String title, String footer) {
         super(inner, null);
@@ -87,36 +87,67 @@ class BorderDecorator extends TicketDecorator {
         this.footer = footer;
     }
 
+    /** Sets the line width (call before render). */
+    void setWidth(int width) {
+        this.width = Math.max(20, width);
+    }
+
     public String render() {
-        return LINE + center("CRA2 PARKING LOT") + center(title) + LINE
+        String line = repeat("=", width) + "\n";
+        String sep = repeat("-", width) + "\n";
+        return line + center("CRA2 PARKING LOT") + center(title) + line
                 + inner.render()
-                + "------------------------------\n"
-                + footer + "\n"
-                + LINE;
+                + sep
+                + wrapFooter(footer) + "\n"
+                + line;
     }
 
     private String center(String text) {
-        StringBuilder spaces = new StringBuilder();
-        for (int i = 0; i < (30 - text.length()) / 2; i++) {
-            spaces.append(' ');
+        int pad = Math.max(0, (width - text.length()) / 2);
+        return repeat(" ", pad) + text + "\n";
+    }
+
+    private String wrapFooter(String text) {
+        if (text.length() <= width) return text;
+        String[] words = text.split(" ");
+        StringBuilder sb = new StringBuilder();
+        int lineLen = 0;
+        for (String w : words) {
+            if (lineLen + w.length() + 1 > width) {
+                sb.append("\n");
+                lineLen = 0;
+            } else if (lineLen > 0) {
+                sb.append(" ");
+                lineLen++;
+            }
+            sb.append(w);
+            lineLen += w.length();
         }
-        return spaces + text + "\n";
+        return sb.toString();
+    }
+
+    private String repeat(String s, int n) {
+        return new String(new char[n]).replace("\0", s);
     }
 }
 
 /** Builds the two kinds of printout by wrapping decorators. */
 class Tickets {
-    static TicketText ticketFor(ParkingRecord record) {
+    static TicketText ticketFor(ParkingRecord record, int width) {
         TicketText ticket = new BasicTicket(record);
         ticket = new TimeInDecorator(ticket, record);
-        return new BorderDecorator(ticket, "PARKING TICKET", " Keep this ticket. Present it\n when leaving the parking lot.");
+        BorderDecorator bd = new BorderDecorator(ticket, "PARKING TICKET", " Keep this ticket. Present it\n when leaving the parking lot.");
+        bd.setWidth(width);
+        return bd;
     }
 
-    static TicketText receiptFor(ParkingRecord record) {
+    static TicketText receiptFor(ParkingRecord record, int width) {
         TicketText receipt = new BasicTicket(record);
         receipt = new TimeInDecorator(receipt, record);
         receipt = new TimeOutDecorator(receipt, record);
         receipt = new FeeDecorator(receipt, record);
-        return new BorderDecorator(receipt, "PARKING RECEIPT", "   Thank you! Drive safely.");
+        BorderDecorator bd = new BorderDecorator(receipt, "PARKING RECEIPT", "   Thank you! Drive safely.");
+        bd.setWidth(width);
+        return bd;
     }
 }

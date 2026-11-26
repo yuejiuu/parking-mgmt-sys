@@ -30,7 +30,7 @@ Run it from IntelliJ: the form is compiled by the IDE's GUI Designer, so buildin
 - **Exit** (red button) checks a vehicle out.
 
 ### Vehicle entry
-- Enter a plate number and choose the vehicle type (Car, Motorcycle, SUV / Van, Truck).
+- Enter a plate number and tick **2 Wheeler** (Motorcycle) or **4 Wheeler** (Car). Both checkboxes start unticked on launch and automatically clear after each vehicle is parked.
 - The vehicle is automatically assigned the first free slot, and the slot (e.g. `B2`) is shown right away.
 - Press **Enter** or click **Park Vehicle** to park.
 
@@ -44,7 +44,6 @@ Each vehicle type knows its own Philippine plate rule. Spaces and dashes are ign
 | Truck | 3 letters + 4 digits (7 characters, any order) | `ABC 1234` |
 | Motorcycle | 3 letters + 3 digits (6 characters, any order) | `AB123C`  |
 
-- **Live check:** the plate box turns light green when the plate is valid and light red when it is not. Hover over the box to see the rule for the chosen vehicle type.
 - If a plate is rejected, the message says how many letters and digits were entered and what is required.
 
 ### Parking ticket
@@ -55,6 +54,7 @@ Each vehicle type knows its own Philippine plate rule. Spaces and dashes are ign
 - Click **Exit**, pick the vehicle that is leaving from the list of parked plates (sorted A-Z) and confirm. You can also click a taken slot on the slot map and choose to check that vehicle out.
 - The slot is freed and a receipt is printed on the Entry page with the time in, time out, duration, billed hours and the total.
 - **Fee** = billed hours x hourly rate. Hours are rounded up with a minimum of 1 hour.
+- **Hidden Time Controls (for fee demos):** Press **`P`** (when not typing in the plate box) or **`Ctrl+P`** (anywhere) to toggle a bottom time-simulation bar (`+1m`, `+15m`, `+1h`, `+3h`, `+1d`, `Reset`) that shifts the live clock and checkout calculations.
 
 | Vehicle type | Rate per hour |
 |---|---|
@@ -70,6 +70,7 @@ Each vehicle type knows its own Philippine plate rule. Spaces and dashes are ign
 
 ### Error handling
 Errors and warnings are shown with `JOptionPane` dialogs:
+- No vehicle type selected (neither **2 Wheeler** nor **4 Wheeler** ticked)
 - Empty plate number
 - Invalid plate number for the chosen vehicle type
 - Vehicle already parked (duplicate plate)
@@ -93,8 +94,13 @@ Exit:  Vehicle Selected -> Fee Computed -> Slot Freed -> Receipt Printed -> Slot
 | Pattern | Type | Where | What it does |
 |---|---|---|---|
 | Factory Method | Creational | `VehicleCreator` and its subclasses | Creates the `Car`, `Motorcycle`, `SuvVan` or `Truck` object. Adding a new vehicle type needs one new `Vehicle` class and one new creator. |
-| Facade | Structural | `ParkingFacade` | The only class the GUI talks to. It hides the slot manager, fee calculator, validation rules and ticket numbering. |
+| Abstract Factory | Creational | `UIComponentFactory` / `DefaultUIComponentFactory` | Creates themed Swing components, fonts, and borders inside `ParkingManagementSystem`. |
+| Builder | Creational | `SlotButtonBuilder` | Constructs configured `SlotComponent` buttons step by step for the slot map. |
+| Facade | Structural | `ParkingFacade` | The only class the GUI talks to. It hides the slot manager, fee calculator, validation rules, ticket numbering, and simulated clock offset. |
 | Decorator | Structural | `TicketText` and its decorators | Builds the ticket and the receipt by wrapping a `BasicTicket` with time, fee and border decorators. |
+| Composite | Structural | `SlotComponent` and `SlotGrid` | Manages individual parking slots and the 16-slot grid uniformly. |
+| Observer | Behavioral | `LotObserver` | Decouples lot state changes from UI refreshes (`refreshSlotMap` and ticket repaints). |
+| Strategy | Behavioral | `LayoutStrategy` and its subclasses | Encapsulates swappable container layouts (`BorderLayoutStrategy`, `GridLayoutStrategy`, `FlowLayoutStrategy`). |
 
 The full class diagram is in `src/class_diagram.mermaid`.
 

@@ -4,17 +4,88 @@ classDiagram
     class ParkingManagementSystem {
         <<GUI>>
         -ParkingFacade lot
-        -VehicleCreator[] creators
+        -VehicleCreator carCreator
+        -VehicleCreator motorcycleCreator
+        -UIComponentFactory uiFactory
+        -SlotGrid slotGrid
+        -List~LotObserver~ lotObservers
+        -LayoutStrategy currentLayout
         -JButton[] slotButtons
-        -checkPlateLive()
+        -initComponents()
+        -setupSlotGrid()
+        -setupTimeControlShortcut()
+        -toggleTimeControls()
+        -adjustSimulatedTime(minutes)
+        -resetSimulatedTime()
         -parkVehicle()
         -exitVehicle()
         -finishCheckOut(plate)
         -showSlotInfo(index)
         -showPage(entryPage)
         -refreshSlotMap()
+        -calculateTicketWidth() int
+        -notifyLotObservers()
         -showError(ex)
+        ~setLayoutStrategy(strategy)
     }
+
+    %% ===== GUI PATTERNS =====
+    class UIComponentFactory {
+        <<interface, Abstract Factory>>
+        +createButton(text) JButton
+        +createLabel(text) JLabel
+        +createTextField() JTextField
+        +createCheckBox(text) JCheckBox
+        +createPanel() JPanel
+        +createScrollPane(view) JScrollPane
+        +createDefaultFont() Font
+        +createLineBorder(color) Border
+        +createEmptyBorder(t, l, b, r) Border
+    }
+    class DefaultUIComponentFactory
+
+    class SlotButtonBuilder {
+        <<Builder>>
+        -UIComponentFactory factory
+        -String name
+        +setName(name) SlotButtonBuilder
+        +setFont(font) SlotButtonBuilder
+        +setForeground(color) SlotButtonBuilder
+        +setActionListener(listener) SlotButtonBuilder
+        +build() SlotComponent
+    }
+
+    class SlotGrid {
+        <<Composite>>
+        -List~SlotComponent~ slots
+        +add(slot)
+        +get(index) SlotComponent
+        +size() int
+        +clear()
+    }
+    class SlotComponent {
+        <<Leaf>>
+        -JButton button
+        -String plate
+        -String vehicleType
+        +setOccupied(plate, type)
+        +setFree()
+        +isOccupied() boolean
+    }
+
+    class LotObserver {
+        <<interface, Observer>>
+        +onLotChanged()
+    }
+
+    class LayoutStrategy {
+        <<interface, Strategy>>
+        +layoutContainer(parent)
+        +getName() String
+    }
+    class BorderLayoutStrategy
+    class GridLayoutStrategy
+    class FlowLayoutStrategy
 
     %% ===== FACADE (structural) =====
     class ParkingFacade {
@@ -23,6 +94,7 @@ classDiagram
         -FeeCalculator fees
         -Map~String, ParkingRecord~ parked
         -int ticketCount
+        -long timeOffsetMillis
         +park(Vehicle) ParkingRecord
         +checkOut(plate) ParkingRecord
         +getRecord(plate) ParkingRecord
@@ -30,6 +102,10 @@ classDiagram
         +getSlotCount() int
         +getSlotName(index) String
         +getSlotPlate(index) String
+        +getCurrentTime() Date
+        +advanceTimeMinutes(minutes)
+        +resetTime()
+        +getTimeOffsetMinutes() long
     }
     class SlotManager {
         -String[] plates
@@ -109,10 +185,13 @@ classDiagram
     class TimeInDecorator
     class TimeOutDecorator
     class FeeDecorator
-    class BorderDecorator
+    class BorderDecorator {
+        -int width
+        ~setWidth(width)
+    }
     class Tickets {
-        +ticketFor(record) TicketText
-        +receiptFor(record) TicketText
+        +ticketFor(record, width) TicketText
+        +receiptFor(record, width) TicketText
     }
 
     class VehicleIcon {
@@ -129,6 +208,19 @@ classDiagram
     ParkingManagementSystem --> Tickets : uses
     ParkingManagementSystem ..> ParkingException : catches
 
+    ParkingManagementSystem --> UIComponentFactory : creates UI
+    UIComponentFactory <|.. DefaultUIComponentFactory
+    ParkingManagementSystem ..> SlotButtonBuilder : builds slots
+    SlotButtonBuilder --> UIComponentFactory : uses
+    SlotButtonBuilder ..> SlotComponent : builds
+    ParkingManagementSystem *-- SlotGrid
+    SlotGrid o-- SlotComponent
+    ParkingManagementSystem o-- LotObserver : notifies
+    ParkingManagementSystem --> LayoutStrategy : uses
+    LayoutStrategy <|.. BorderLayoutStrategy
+    LayoutStrategy <|.. GridLayoutStrategy
+    LayoutStrategy <|.. FlowLayoutStrategy
+
     ParkingFacade *-- SlotManager
     ParkingFacade *-- FeeCalculator
     ParkingFacade o-- ParkingRecord
@@ -140,6 +232,7 @@ classDiagram
     VehicleCreator <|-- SuvVanCreator
     VehicleCreator <|-- TruckCreator
     VehicleCreator ..> Vehicle : creates
+
     Vehicle <|-- Car
     Vehicle <|-- Motorcycle
     Vehicle <|-- SuvVan
